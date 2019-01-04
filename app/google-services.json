@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "651220252801",
+    "firebase_url": "https://orkunyonetim.firebaseio.com",
+    "project_id": "orkunyonetim",
+    "storage_bucket": "orkunyonetim.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:651220252801:android:5d95eada2e4297fc",
+        "android_client_info": {
+          "package_name": "sedatdilmac.com.orkunyonetim"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "651220252801-c018q0nte0531qvrd6p8k5nc3tij43jd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "sedatdilmac.com.orkunyonetim",
+            "certificate_hash": "58a8b0a2bcd385b2ee16561c1574c1c0515e8e26"
+          }
+        },
+        {
+          "client_id": "651220252801-28moobhmqcte89tdcv87kdgp0kbpn5q0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnLxTmLSfrVcyyOtIcwNjNhN1Bitsfvek"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "651220252801-28moobhmqcte89tdcv87kdgp0kbpn5q0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
