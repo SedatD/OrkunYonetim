@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 
 import java.util.Calendar;
 
@@ -12,9 +14,9 @@ import java.util.Calendar;
  * on 29.07.2018.
  */
 
-public class MyUtils {
+public class Utils {
 
-    private static final String TAG = MyUtils.class.getSimpleName();
+    private static final String TAG = Utils.class.getSimpleName();
 
     public static int dpToPx(float dp) {
         float density = Resources.getSystem().getDisplayMetrics().density;
@@ -34,6 +36,12 @@ public class MyUtils {
     public static void setMeasures(View view, int px) {
         view.getLayoutParams().width = px;
         view.getLayoutParams().height = px;
+    }
+
+    public static void setAnimation(View viewToAnimate, int time) {
+        ScaleAnimation anim = new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        anim.setDuration(time);
+        viewToAnimate.startAnimation(anim);
     }
 
     public String getAge(int year, int month, int day) {

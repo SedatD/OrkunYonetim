@@ -27,11 +27,11 @@ import java.util.Map;
 
 public class AqJSONArrayRequest extends JsonArrayRequest {
 
-    private static final String TAG = "AqJSONArrayRequest ";
+    private String TAG = "AqJSONArrayRequest ";
 
     public AqJSONArrayRequest(String TAG, String url, @Nullable JSONArray params, Response.Listener<JSONArray> listener, @Nullable Response.ErrorListener errorListener) {
         super(Method.POST, url, params, listener, errorListener);
-
+        this.TAG = TAG;
         Log.wtf(TAG, "params : " + params);
     }
 

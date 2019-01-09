@@ -1,6 +1,5 @@
 package sedatdilmac.com.orkunyonetim.util;
 
-import android.app.Application;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -18,13 +17,13 @@ import static com.android.volley.VolleyLog.TAG;
  * on 25.07.2018.
  */
 
-public class MyApplication extends Application {
+public class Application extends android.app.Application {
 
-    private static MyApplication mInstance;
+    private static Application mInstance;
     private RequestQueue mRequestQueue;
     private SharedPreferences mPreferences;
 
-    public static synchronized MyApplication get() {
+    public static synchronized Application get() {
         return mInstance;
     }
 

@@ -3,23 +3,20 @@ package sedatdilmac.com.orkunyonetim.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -31,6 +28,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -44,25 +42,23 @@ import java.util.List;
 
 import sedatdilmac.com.orkunyonetim.R;
 import sedatdilmac.com.orkunyonetim.aqrequest.AqJSONObjectRequest;
-import sedatdilmac.com.orkunyonetim.util.MyApplication;
+import sedatdilmac.com.orkunyonetim.pojo.User;
+import sedatdilmac.com.orkunyonetim.util.Application;
 
 import static android.Manifest.permission.READ_CONTACTS;
 import static sedatdilmac.com.orkunyonetim.util.StaticFields.BASE_URL;
 import static sedatdilmac.com.orkunyonetim.util.StaticFields.HASH;
 
-/**
- * A login screen that offers login via email/password.
- */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
-    private static final String TAG = "LoginAct ";
+    private static final String TAG = "LoginActivity ";
 
     private static final int REQUEST_READ_CONTACTS = 0;
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    private String osi;
+    private String osi = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,20 +93,22 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         osi = OneSignal.getPermissionSubscriptionState().getSubscriptionStatus().getUserId();
 
-        String loginResponse = MyApplication.get().getPreferences().getString("loginResponse", null);
-        /*if (loginResponse != null) {
+        String loginResponse = Application.get().getPreferences().getString("loginResponse", null);
+        if (loginResponse != null) {
             try {
                 JSONObject jsonObject = new JSONObject(loginResponse);
-                User user = new User(jsonObject,true);
-                requestJson(user.getEmail(), user.getPassword(), osi);
+                User user = new User(jsonObject);
+                if (osi == null)
+                    osi = user.getOneSignalID();
+                requestJson(user.getEmail(), user.getPassword());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }*/
+        }
 
     }
 
-    private void requestJson(String email, String password, String osi) {
+    private void requestJson(String email, String password) {
         JSONObject params = new JSONObject();
         try {
             params.put("email", email);
@@ -123,10 +121,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 public void onResponse(JSONObject response) {
                     Log.wtf(TAG, "onResponse : " + response);
 
-                    SharedPreferences.Editor editor = MyApplication.get().getPreferencesEditor();
+                    SharedPreferences.Editor editor = Application.get().getPreferencesEditor();
                     editor.putString("loginResponse", response + "");
                     editor.apply();
 
+                    showProgress(false);
                     finish();
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 }
@@ -136,14 +135,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.wtf(TAG, "onErrorResponse : " + error);
+                    showProgress(false);
+                    Toast.makeText(LoginActivity.this, R.string.baglanti_hatasi, Toast.LENGTH_SHORT).show();
                 }
             };
 
-            AqJSONObjectRequest aqJSONObjectRequest = new AqJSONObjectRequest(TAG,BASE_URL + "userLogin.php", params, listener, errorListener);
-            MyApplication.get().getRequestQueue().add(aqJSONObjectRequest);
+            AqJSONObjectRequest aqJSONObjectRequest = new AqJSONObjectRequest(TAG, BASE_URL + "userLogin", params, listener, errorListener);
+            Application.get().getRequestQueue().add(aqJSONObjectRequest);
         } catch (JSONException e) {
             Log.wtf(TAG, "request params catch e.getMessage() : " + e.getMessage());
             e.printStackTrace();
+            showProgress(false);
+            Toast.makeText(LoginActivity.this, R.string.bir_hata_olustu, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -224,7 +227,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            requestJson(email, password, osi);
+            requestJson(email, password);
         }
     }
 
@@ -233,7 +236,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isPasswordValid(String password) {
-        return password.length() > 4;
+        return password.length() > 3;
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)

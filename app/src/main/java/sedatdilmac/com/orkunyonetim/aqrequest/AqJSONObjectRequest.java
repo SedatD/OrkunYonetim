@@ -26,11 +26,11 @@ import java.util.Map;
 
 public class AqJSONObjectRequest extends JsonObjectRequest {
 
-    private static final String TAG = "AqJSONObjectRequest ";
+    private String TAG = "AqJSONObjectRequest ";
 
     public AqJSONObjectRequest(String TAG, String url, @Nullable JSONObject params, Response.Listener<JSONObject> listener, @Nullable Response.ErrorListener errorListener) {
         super(Method.POST, url, params, listener, errorListener);
-
+        this.TAG = TAG;
         Log.wtf(TAG, "params : " + params);
     }
 

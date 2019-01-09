@@ -26,12 +26,12 @@ import java.util.Map;
 
 public class AqStringRequest extends StringRequest {
 
-    private static final String TAG = "AqStringRequest ";
+    private String TAG = "AqStringRequest ";
     private Map<String, String> _params;
 
     public AqStringRequest(String TAG, String url, @Nullable Map<String, String> params, Response.Listener<String> listener, @Nullable Response.ErrorListener errorListener) {
         super(Method.POST, url, listener, errorListener);
-
+        this.TAG = TAG;
         Log.wtf(TAG, "params : " + params);
 
         _params = params;
